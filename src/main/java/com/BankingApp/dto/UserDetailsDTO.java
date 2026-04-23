@@ -12,7 +12,6 @@ public class UserDetailsDTO {
     String lastName;
     String email;
     String password;
-    LocalDate dateOfBirth;
     String codFiscale;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;

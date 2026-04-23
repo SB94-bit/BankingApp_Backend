@@ -13,17 +13,16 @@ public class TransactionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private BigDecimal amount;
-    private  String type;
-    private  String status;
+    private String amount;
+    private String type;
 
-    @Column(nullable = false)
-    private  Long sourceAccountId;
+    private String sourceCardNumber;
 
-    @Column(nullable = false)
-    private  Long destinationAccountId;
+    private String destinationCardNumber;
 
-
-    private  String description;
     private LocalDateTime createdAt;
+
+    @ManyToOne
+    @JoinColumn(name = "account_id", nullable = false)
+    private AccountEntity account;
 }

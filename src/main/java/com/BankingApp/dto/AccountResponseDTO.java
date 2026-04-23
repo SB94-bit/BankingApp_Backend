@@ -8,8 +8,8 @@ import java.time.LocalDateTime;
 @Data
 public class AccountResponseDTO {
     private Long id;
+    private String cardNumber;
     private String iban;
     private BigDecimal balance;
-    private Long userId;
-    private LocalDateTime createdAt;
+    private Boolean active;
 }
