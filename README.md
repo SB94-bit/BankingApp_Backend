@@ -1,4 +1,3 @@
-BankingApp_Backend
 ==================================== ENG ==================================== 
 Simulated backend made with Springboot of a Banking app that allows users to sign in, create and account and transfer money. 
 The app was designed to use the schema banking_system_db in Mysql (port: 3306) 
