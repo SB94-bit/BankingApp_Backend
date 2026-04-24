@@ -42,7 +42,6 @@ public class AccountServiceImpl implements AccountService {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
-        System.out.println(currentPrincipalName);
         UserEntity newUser = userService.findByEmail(authentication.getName());
 
         if(newUser == null){
@@ -77,9 +76,22 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional
-    public void disableAccount(AccountRequestDTO accountRequestDTO){
-        AccountEntity accountEntity = accountRequestMapper.toEntity(accountRequestDTO);
+    public void disableAccount(String cardNumber){
+        AccountEntity accountEntity = accountRepository.findByCardNumber(cardNumber);
+        if(accountEntity == null){
+            throw new ResourceNotFoundException("Numero di carta non trovato");
+        }
         accountEntity.setActive(false);
+    }
+
+    @Override
+    @Transactional
+    public void enableAccount(String cardNumber){
+        AccountEntity accountEntity = accountRepository.findByCardNumber(cardNumber);
+        if(accountEntity == null){
+            throw new ResourceNotFoundException("Numero di carta non trovato");
+        }
+        accountEntity.setActive(true);
     }
 
     @Override
@@ -88,7 +100,6 @@ public class AccountServiceImpl implements AccountService {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
-        System.out.println(currentPrincipalName);
         UserEntity user = userService.findByEmail(authentication.getName());
 
         AccountEntity accountEntity = accountRepository.findByCardNumber(transactionRequestDTO.getDestinationCardNumber());
@@ -106,7 +117,6 @@ public class AccountServiceImpl implements AccountService {
                 .findByIdWithLock(accountEntity.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Account non trovato"));
 
-        System.out.println("User ID: " + user.getId() + "\n Account ID: " + accountEntity.getUser().getId());
 
         if(accountEntity.getActive() == false){
             throw new ResourceNotFoundException("L'account non è attivo");
@@ -127,7 +137,6 @@ public class AccountServiceImpl implements AccountService {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
-        System.out.println(currentPrincipalName);
         UserEntity user = userService.findByEmail(authentication.getName());
 
         AccountEntity accountEntity = accountRepository.findByCardNumber(transactionRequestDTO.getSourceCardNumber());
@@ -167,7 +176,6 @@ public class AccountServiceImpl implements AccountService {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
-        System.out.println(currentPrincipalName);
         UserEntity user = userService.findByEmail(authentication.getName());
 
         AccountEntity sourceAccountEntity = accountRepository.findByCardNumber(transactionRequestDTO.getSourceCardNumber());
@@ -224,7 +232,6 @@ public class AccountServiceImpl implements AccountService {
     public List<TransactionResponseDTO> getTransactionList(String cardNumber){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
-        System.out.println(currentPrincipalName);
         UserEntity user = userService.findByEmail(authentication.getName());
 
         AccountEntity accountEntity = accountRepository.findByCardNumber(cardNumber);
@@ -244,7 +251,6 @@ public class AccountServiceImpl implements AccountService {
     public AccountDetailsDTO showDetails(String cardNumber) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
-        System.out.println(currentPrincipalName);
         UserEntity user = userService.findByEmail(authentication.getName());
 
         AccountEntity accountEntity = accountRepository.findByCardNumber(cardNumber);

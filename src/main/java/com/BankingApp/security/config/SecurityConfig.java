@@ -1,6 +1,5 @@
 package com.BankingApp.security.config;
 
-import com.BankingApp.security.UserDetailsServiceImpl;
 import com.BankingApp.security.jwt.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -46,7 +45,6 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception{
         return http
                 .csrf(customizer -> customizer.disable())
-                //.httpBasic(Customizer.)
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
@@ -54,23 +52,21 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/login").permitAll()
 
-                        .requestMatchers(HttpMethod.GET, "/api/user/new").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/user/new").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/user/all").hasRole("USER")
                         .requestMatchers(HttpMethod.GET, "/api/user/allUsersDetails").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/user/update").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/user/delete").hasRole("ADMIN")
 
-                        .requestMatchers(HttpMethod.POST, "/api/searchByKeyword").authenticated()
 
                         .requestMatchers(HttpMethod.POST, "/api/account/new").hasRole("USER")
+                        .requestMatchers(HttpMethod.PUT, "/api/account/disableAccount").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/account/enableAccount").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/account/deposit").hasRole("USER")
                         .requestMatchers(HttpMethod.POST, "/api/account/withdraw").hasRole("USER")
                         .requestMatchers(HttpMethod.POST, "/api/account/transfer").hasRole("USER")
-                        .requestMatchers(HttpMethod.POST, "/api/account/accountDetails").hasRole("USER")
-                        .requestMatchers(HttpMethod.POST, "/api/account/transactionList").hasRole("USER"))
-
-
-                        //.requestMatchers("/api/user/**").permitAll())
+                        .requestMatchers(HttpMethod.GET, "/api/account/accountDetails").hasRole("USER")
+                        .requestMatchers(HttpMethod.GET, "/api/account/transactionList").hasRole("USER"))
 
 
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)

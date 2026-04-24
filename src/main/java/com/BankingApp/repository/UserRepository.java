@@ -13,10 +13,6 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
-    List<UserEntity> findByLastNameOrFirstNameIgnoreCase(String firstName, String lastname);
-
-    List<UserEntity> findByCodFiscaleIgnoreCase(String codFiscale);
-
     boolean existsByCodFiscaleIgnoreCase(String codFiscale);
 
     Optional<UserEntity> findByEmailIgnoreCase(String email);

@@ -1,9 +1,9 @@
-package com.lipari.BankingApp;
+package com.BankingApp;
 
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class Academy2026ApplicationTests {
+class BankingAppApplicationTests {
 
 //	@Test
 //	void contextLoads() {

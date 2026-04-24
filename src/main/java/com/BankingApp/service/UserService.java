@@ -15,15 +15,9 @@ public interface UserService {
 
     public List<UserDetailsDTO> getAllUsersDetails();
 
-    public UserRequestDTO getUserById(Long id);
-
     public UserResponseDTO updateUser(UserRequestDTO userRequestDTO);
 
     public void deleteUser(UserRequestDTO userRequestDTO);
-
-    public List<UserResponseDTO> findByLastNameOrFirstName(String firstName, String lastName);
-
-    public List<UserResponseDTO> searchByCodFiscale(String codFiscale);
 
     public UserEntity findByEmail(String email);
 }

@@ -10,7 +10,9 @@ public interface AccountService {
 
     public AccountResponseDTO newAccount(AccountRequestDTO accountRequestDTO, String type);
 
-    public void disableAccount(AccountRequestDTO accountRequestDTO);
+    public void disableAccount(String cardNumber);
+
+    public void enableAccount(String cardNumber);
 
     public AccountResponseDTO deposit(TransactionRequestDTO transactionRequestDTO);
 

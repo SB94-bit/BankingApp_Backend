@@ -17,7 +17,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -70,13 +69,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserRequestDTO getUserById(Long id) {
-        return userRepository.findById(id)
-                .map(userRequestMapper::toDto)
-                .orElseThrow(() -> new ResourceNotFoundException("Utente con ID " + id + " non trovato"));
-    }
-
-    @Override
     @Transactional
     public UserResponseDTO updateUser(UserRequestDTO userRequestDTO) {
         if (!userRepository.existsById(userRequestDTO.getId())) {
@@ -85,17 +77,21 @@ public class UserServiceImpl implements UserService {
         if(userRequestDTO.getCodFiscale() == null){
             throw new ResourceNotFoundException("Campo cod Fiscale vuoto");
         }
-        if (userRepository.existsByCodFiscaleIgnoreCase(userRequestDTO.getCodFiscale())) {
-            throw new AlreadyExistsException("Esiste già un utente con questo Codice Fiscale: " + userRequestDTO.getCodFiscale());
-        }
+
         if(userRequestDTO.getPassword() == null){
             throw new ResourceNotFoundException("Campo password vuoto");
         }
+        Optional<UserEntity> originalUser = userRepository.findById(userRequestDTO.getId());
+        if(originalUser.isEmpty()){
+            throw new ResourceNotFoundException("Impossibile aggiornare: utente con ID " + userRequestDTO.getId() + " non trovato");
+        }
         UserEntity userEntity = userRequestMapper.toEntity(userRequestDTO);
+        userEntity.setCreatedAt(originalUser.get().getCreatedAt());
         userEntity.setUpdatedAt(LocalDateTime.now());
         userEntity.setFirstName(userRequestDTO.getFirstName());
         userEntity.setLastName(userRequestDTO.getLastName());
         userEntity.setCodFiscale(userRequestDTO.getCodFiscale());
+        userEntity.setRole(UserRole.USER);
         userEntity.setPassword(bCryptPasswordEncoder.encode(userRequestDTO.getPassword()));
         return userResponseMapper.toDto(userRepository.save(userEntity));
     }
@@ -107,20 +103,6 @@ public class UserServiceImpl implements UserService {
             throw new ResourceNotFoundException("Impossibile eliminare: utente con ID " + userRequestDTO.getId() + " non trovato");
         }
         userRepository.deleteById(userRequestDTO.getId());
-    }
-
-    @Override
-    public List<UserResponseDTO> findByLastNameOrFirstName(String firstName, String lastname) {
-        return userRepository.findByLastNameOrFirstNameIgnoreCase(firstName,lastname).stream()
-                .map(userResponseMapper::toDto)
-                .toList();
-    }
-
-    @Override
-    public List<UserResponseDTO> searchByCodFiscale(String codFiscale){
-        return userRepository.findByCodFiscaleIgnoreCase(codFiscale).stream()
-                .map(userResponseMapper::toDto)
-                .toList();
     }
 
     @Override

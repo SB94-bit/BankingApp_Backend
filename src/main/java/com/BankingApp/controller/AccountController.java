@@ -27,6 +27,18 @@ public class AccountController {
         return new ResponseEntity<>(accountResponseDTO, HttpStatus.CREATED);
     }
 
+    @PutMapping("/disableAccount")
+    public ResponseEntity<Void> disableAccount(@RequestParam String cardNumber){
+        this.accountService.disableAccount(cardNumber);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/enableAccount")
+    public ResponseEntity<Void> enableAccount(@RequestParam String cardNumber){
+        this.accountService.enableAccount(cardNumber);
+        return ResponseEntity.noContent().build();
+    }
+
     @PostMapping("/deposit")
     public ResponseEntity<AccountResponseDTO> deposit(@RequestBody TransactionRequestDTO transactionRequestDTO){
         AccountResponseDTO accountResponseDTO = this.accountService.deposit(transactionRequestDTO);
@@ -44,12 +56,12 @@ public class AccountController {
         AccountResponseDTO accountResponseDTO = this.accountService.transfer(transactionRequestDTO);
         return new ResponseEntity<>(accountResponseDTO, HttpStatus.OK);
     }
-    @PostMapping("/accountDetails")
+    @GetMapping("/accountDetails")
     public ResponseEntity<AccountDetailsDTO> showDetails(@RequestParam String cardNumber){
         return ResponseEntity.ok(this.accountService.showDetails(cardNumber));
     }
 
-    @PostMapping("/transactionList")
+    @GetMapping("/transactionList")
     public ResponseEntity<List<TransactionResponseDTO>> getTransactionsById(@RequestParam String cardNumber){
         return ResponseEntity.ok(this.accountService.getTransactionList(cardNumber));
     }
